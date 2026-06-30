@@ -22,3 +22,12 @@ class Problem:
     slug: str
     difficulty: Difficulty
     status: Status
+
+
+@dataclass
+class PublicProblem:
+    number: int
+    title: str
+    difficulty: Difficulty
+    status: Status
+

@@ -1,5 +1,8 @@
 import sqlite3
 from pathlib import Path
+from typing import List
+
+from .models import Difficulty, Problem, PublicProblem
 
 DB_PATH = Path("leetnotes.db")
 
@@ -31,3 +34,42 @@ def reset_db() -> None:
         conn.execute("DROP TABLE IF EXISTS problems")
 
     init_db()
+
+
+def delete_problem(number: int) -> bool:
+    with get_connection() as conn:
+        cursor = conn.execute(
+            "DELETE FROM problems WHERE number = ?",
+            (number,),
+        )
+
+        return cursor.rowcount > 0
+
+
+def add_problem(number: int, title: str, difficulty: Difficulty) -> int:
+    with get_connection() as conn:
+        slug = f"{number}-{title}"
+        cursor = conn.execute(
+            """
+            INSERT INTO problems (number, title, slug, difficulty)
+            VALUES (?, ?, ?, ?)
+            """,
+            (number, title, slug, difficulty.value)
+        )
+
+        return cursor.lastrowid
+
+def get_problems() -> List[PublicProblem]:
+    with get_connection() as conn:
+        cursor = conn.execute(
+            """
+            SELECT number, title, difficulty, status FROM problems;
+            """
+        )
+
+        problems = []
+        for number, title, difficulty, status in cursor.fetchall():
+            problems.append(PublicProblem(number, title, difficulty, status))
+
+        return problems
+
