@@ -1,8 +1,10 @@
 import typer
-from .db import get_connection, init_db, reset_db
+from rich.console import Console
+from .db import init_db, reset_db, add_problem, delete_problem, get_problems
 from .models import Difficulty
 
 app = typer.Typer()
+console = Console()
 
 @app.callback()
 def main() -> None:
@@ -14,6 +16,7 @@ def init() -> None:
     init_db()
     typer.echo("Database initialized.")
 
+
 @app.command()
 def reset() -> None:
     reset_db()
@@ -21,28 +24,36 @@ def reset() -> None:
 
 
 @app.command()
-def add_problem(number: int, title: str, difficulty: Difficulty) -> int:
-    with get_connection() as conn:
-        slug = f"{number}-{title}"
-        cursor = conn.execute(
-            """
-            INSERT INTO problems (number, title, slug, difficulty)
-            VALUES (?, ?, ?, ?)
-            """,
-            (number, title, slug, difficulty.value)
+def add(number: int, title: str, difficulty: Difficulty) -> None:
+    problem_id = add_problem(number, title, difficulty)
+
+    typer.echo(f"Added problem {number}.{title}")
+
+
+@app.command()
+def show() -> None:
+    problems = get_problems()
+
+    if problems:
+        typer.echo(f"Problems: {problems}")
+    else:
+        typer.echo("No problems found.")
+
+
+@app.command()
+def delete(number: int, force: bool = False) -> None:
+    if not force:
+        typer.confirm(
+            f"Delete problem #{number}?",
+            abort=True,
         )
 
-        return cursor.lastrowid
+    deleted = delete_problem(number)
 
-
-@app.command()
-def add(title: str):
-    print(f"New problem was added: {title}!")
-
-
-@app.command()
-def delete(title: str):
-    print(f"Problem was deleted: {title}.")
+    if deleted:
+        typer.echo(f"Problem {number} was deleted.")
+    else:
+        typer.echo(f"Problem {number} was not deleted.")
 
 
 if __name__ == "__main__":
