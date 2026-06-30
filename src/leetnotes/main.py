@@ -1,10 +1,31 @@
 import typer
-from rich.console import Console
+from rich.table import Table
+
 from .db import init_db, reset_db, add_problem, delete_problem, get_problems
-from .models import Difficulty
+from .models import Difficulty, PublicProblem
+from .console import console
+
 
 app = typer.Typer()
-console = Console()
+
+def show_problems_table(problems: list[PublicProblem]) -> None:
+    table = Table(title="LeetCode")
+
+    table.add_column("№")
+    table.add_column("Title")
+    table.add_column("Difficulty")
+    table.add_column("Status")
+
+    for problem in problems:
+        table.add_row(
+            str(problem.number),
+            problem.title,
+            problem.difficulty,
+            problem.status,
+        )
+
+    console.print(table)
+
 
 @app.callback()
 def main() -> None:
@@ -34,10 +55,11 @@ def add(number: int, title: str, difficulty: Difficulty) -> None:
 def show() -> None:
     problems = get_problems()
 
-    if problems:
-        typer.echo(f"Problems: {problems}")
-    else:
+    if not problems:
         typer.echo("No problems found.")
+        return
+
+    show_problems_table(problems)
 
 
 @app.command()
