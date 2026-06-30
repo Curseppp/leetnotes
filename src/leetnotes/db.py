@@ -24,7 +24,7 @@ def init_db():
             title TEXT NOT NULL,
             slug TEXT NOT NULL,
             difficulty TEXT NOT NULL CHECK(difficulty IN ('easy', 'medium', 'hard')),
-            status TEXT NOT NULL CHECK(status IN ('TODO', 'SOLVING', 'SOLVED', 'REVIEW')) DEFAULT 'TODO'    
+            status TEXT NOT NULL CHECK(status IN ('todo', 'solving', 'solved', 'review')) DEFAULT 'todo'    
         )
         """)
 

@@ -9,10 +9,10 @@ class Difficulty(Enum):
 
 
 class Status(Enum):
-    TODO = 0
-    SOLVING = 1
-    SOLVED = 2
-    REVIEW = 3
+    TODO = "todo"
+    SOLVING = "solving"
+    SOLVED = "solved"
+    REVIEW = "review"
 
 
 @dataclass
