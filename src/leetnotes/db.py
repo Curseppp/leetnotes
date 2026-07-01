@@ -11,7 +11,7 @@ DB_PATH = Path("leetnotes.db")
 def get_connection() -> sqlite3.Connection:
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
-    return sqlite3.connect(DB_PATH)
+    return conn
 
 
 def init_db():
