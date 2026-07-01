@@ -2,7 +2,7 @@ import sqlite3
 from pathlib import Path
 from typing import List
 
-from .models import Difficulty, Problem, PublicProblem
+from .models import Difficulty, PublicProblem, Status
 
 DB_PATH = Path("leetnotes.db")
 
@@ -69,7 +69,7 @@ def get_problems() -> List[PublicProblem]:
 
         problems = []
         for number, title, difficulty, status in cursor.fetchall():
-            problems.append(PublicProblem(number, title, difficulty, status))
+            problems.append(PublicProblem(number, title, Difficulty(difficulty), Status(status)))
 
         return problems
 
