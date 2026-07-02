@@ -4,11 +4,16 @@ from typing import Literal
 
 from .models import Difficulty, PublicProblem, Status
 
-DB_PATH = Path.home() / ".leetnotes" / "leetnotes.db"
 
+DB_PATH = Path.home() / ".leetnotes" / "leetnotes.db"
 
 StatsParam = Literal["difficulty", "status"]
 
+
+def create_url(title: str) -> str:
+    slug = "-".join(title.lower().split())
+    url = f"https://leetcode.com/problems/{slug}/"
+    return url
 
 
 def get_connection() -> sqlite3.Connection:
@@ -27,7 +32,7 @@ def init_db():
            id INTEGER PRIMARY KEY AUTOINCREMENT,
             number INTEGER NOT NULL UNIQUE,
             title TEXT NOT NULL,
-            slug TEXT NOT NULL,
+            url TEXT NOT NULL,
             difficulty TEXT NOT NULL CHECK(difficulty IN ('easy', 'medium', 'hard')),
             status TEXT NOT NULL CHECK(status IN ('todo', 'solving', 'solved', 'review')) DEFAULT 'todo'    
         )
@@ -51,15 +56,15 @@ def delete_problem(number: int) -> bool:
         return cursor.rowcount > 0
 
 
-def add_problem(number: int, title: str, difficulty: Difficulty, status: Status) -> int:
+def add_problem(number: int, title: str, difficulty: Difficulty, status: Status | None = Status.TODO) -> int:
     with get_connection() as conn:
-        slug = f"{number}-{title}"
+        url = create_url(title)
         cursor = conn.execute(
             """
-            INSERT INTO problems (number, title, slug, difficulty, status)
+            INSERT INTO problems (number, title, url, difficulty, status)
             VALUES (?, ?, ?, ?, ?)
             """,
-            (number, title, slug, difficulty.value, status.value),
+            (number, title, url, difficulty.value, status.value),
         )
 
         return cursor.lastrowid
@@ -96,7 +101,7 @@ def get_problems(
     status: Status | None = None,
 ) -> list[PublicProblem]:
     query = """
-        SELECT number, title, difficulty, status
+        SELECT number, title, difficulty, status, url
         FROM problems
     """
 
@@ -126,10 +131,24 @@ def get_problems(
                 title=row["title"],
                 difficulty=Difficulty(row["difficulty"]),
                 status=Status(row["status"]),
+                url=row["url"]
             )
             for row in rows
         ]
 
+def get_url(number: int) -> str | None:
+    with get_connection() as conn:
+        cursor = conn.execute(
+            " SELECT url FROM problems WHERE number = ?",
+            (number, ),
+        )
+
+        row = cursor.fetchone()
+
+        if row is None:
+            return None
+
+        return str(row["url"])
 
 def get_stats(param: StatsParam) -> dict[str, dict[str, int]]:
     allowed_params = {"difficulty", "status"}

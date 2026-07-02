@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
+
 class Difficulty(str, Enum):
     EASY = "easy"
     MEDIUM = "medium"
@@ -18,7 +19,7 @@ class Status(str, Enum):
 class Problem:
     number: int
     title: str
-    slug: str
+    url: str
     difficulty: Difficulty
     status: Status
 
@@ -29,4 +30,5 @@ class PublicProblem:
     title: str
     difficulty: Difficulty
     status: Status
+    url: str
 

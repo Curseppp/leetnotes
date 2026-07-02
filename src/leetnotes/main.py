@@ -1,8 +1,7 @@
-from typing import Literal
-
 import typer
+import webbrowser
 
-from .db import init_db, reset_db, add_problem, delete_problem, get_problems, get_status, update_status, get_stats
+from .db import init_db, reset_db, add_problem, delete_problem, get_problems, get_status, update_status, get_stats, get_url
 from .models import Difficulty, Status
 from .output import ProblemsTable, StatsTable
 
@@ -28,7 +27,7 @@ def reset() -> None:
 
 
 @app.command()
-def add(number: int, title: str, difficulty: Difficulty, status: Status) -> None:
+def add(number: int, title: str, difficulty: Difficulty, status: Status | None = Status.TODO) -> None:
     problem_id = add_problem(number, title, difficulty, status)
 
     typer.echo(f"Added problem {number}.{title}")
@@ -72,8 +71,6 @@ def show(difficulty: Difficulty | None = None, status: Status | None = None) -> 
     table.show()
 
 
-
-
 @app.command()
 def delete(number: int, force: bool = False) -> None:
     if not force:
@@ -104,6 +101,19 @@ def stats(stat_name: str) -> None:
             table.add_stat(name, quantity)
 
         table.show()
+
+
+@app.command()
+def open(number: int) -> None:
+    url = get_url(number)
+
+    if url:
+        typer.echo(f"Opened {url}")
+        webbrowser.open(url)
+    else:
+        typer.echo(f"There is no such problem #{number}")
+
+
 
 
 if __name__ == "__main__":
