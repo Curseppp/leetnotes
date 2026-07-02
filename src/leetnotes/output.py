@@ -26,12 +26,13 @@ class ProblemsTable:
 
     def _format_difficulty(self, difficulty: Difficulty) -> str:
         match difficulty:
-            case Difficulty.easy:
-                return "[green]easy[/green]"
-            case Difficulty.medium:
-                return "[yellow]medium[/yellow]"
-            case Difficulty.hard:
-                return "[red]hard[/red]"
+            case Difficulty.EASY:
+                return f"[green]{Difficulty.EASY.value}[/green]"
+            case Difficulty.MEDIUM:
+                return f"[yellow]{Difficulty.MEDIUM.value}[/yellow]"
+            case Difficulty.HARD:
+                return f"[red]{Difficulty.HARD.value}[/red]"
+
 
     def _format_status(self, status: Status) -> str:
         match status:

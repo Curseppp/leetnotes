@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 from enum import Enum
 
-class Difficulty(Enum):
-    easy = "easy"
-    medium = "medium"
-    hard = "hard"
+class Difficulty(str, Enum):
+    EASY = "easy"
+    MEDIUM = "medium"
+    HARD = "hard"
 
 
-class Status(Enum):
+class Status(str, Enum):
     TODO = "todo"
     SOLVING = "solving"
     SOLVED = "solved"

@@ -91,7 +91,6 @@ def get_problems(
     query = """
         SELECT number, title, difficulty, status
         FROM problems
-        ORDER BY number
     """
 
     conditions = []
@@ -107,6 +106,8 @@ def get_problems(
 
     if conditions:
         query += " WHERE " + " AND ".join(conditions)
+
+    query += " ORDER BY number"
 
     with get_connection() as conn:
         cursor = conn.execute(query, params)

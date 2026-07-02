@@ -36,6 +36,10 @@ def add(number: int, title: str, difficulty: Difficulty) -> None:
 def status(number: int) -> None:
     problem_status = get_status(number)
 
+    if problem_status is None:
+        typer.echo(f"Problem #{number} not found.")
+        return
+
     typer.echo(f"Problem #{number}: {problem_status.value}")
 
 
