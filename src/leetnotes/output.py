@@ -6,7 +6,7 @@ from .models import PublicProblem, Difficulty, Status
 
 class ProblemsTable:
     def __init__(self) -> None:
-        self.table = Table(title="LeetCode")
+        self.table = Table(title="Leetnotes")
 
         self.table.add_column("№", style="cyan")
         self.table.add_column("Title", style="bold")
@@ -36,10 +36,10 @@ class ProblemsTable:
     def _format_status(self, status: Status) -> str:
         match status:
             case Status.TODO:
-                return "[dim]TODO[/dim]"
+                return f"[dim]{Status.TODO.value.upper()}[/dim]"
             case Status.SOLVING:
-                return "[yellow]SOLVING[/yellow]"
+                return f"[yellow]{Status.SOLVING.value.upper()}[/yellow]"
             case Status.SOLVED:
-                return "[green]SOLVED[/green]"
+                return f"[green]{Status.SOLVED.value.upper()}[/green]"
             case Status.REVIEW:
-                return "[blue]REVIEW[/blue]"
+                return f"[blue]{Status.REVIEW.value.upper()}[/blue]"

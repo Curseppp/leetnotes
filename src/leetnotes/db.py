@@ -1,6 +1,5 @@
 import sqlite3
 from pathlib import Path
-from typing import List
 
 from .models import Difficulty, PublicProblem, Status, Problem
 
@@ -85,17 +84,40 @@ def update_status(number: int, status: Status):
 
 
 
-def get_problems() -> List[PublicProblem]:
+def get_problems(
+    difficulty: Difficulty | None = None,
+    status: Status | None = None,
+) -> list[PublicProblem]:
+    query = """
+        SELECT number, title, difficulty, status
+        FROM problems
+        ORDER BY number
+    """
+
+    conditions = []
+    params = []
+
+    if difficulty is not None:
+        conditions.append("difficulty = ?")
+        params.append(difficulty.value)
+
+    if status is not None:
+        conditions.append("status = ?")
+        params.append(status.value)
+
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+
     with get_connection() as conn:
-        cursor = conn.execute(
-            """
-            SELECT number, title, difficulty, status FROM problems;
-            """
-        )
+        cursor = conn.execute(query, params)
+        rows = cursor.fetchall()
 
-        problems = []
-        for number, title, difficulty, status in cursor.fetchall():
-            problems.append(PublicProblem(number, title, Difficulty(difficulty), Status(status)))
-
-        return problems
-
+        return [
+            PublicProblem(
+                number=row["number"],
+                title=row["title"],
+                difficulty=Difficulty(row["difficulty"]),
+                status=Status(row["status"]),
+            )
+            for row in rows
+        ]

@@ -40,7 +40,7 @@ def status(number: int) -> None:
 
 
 @app.command()
-def change_status(number: int, status: Status) -> None:
+def edit_status(number: int, status: Status) -> None:
     res = update_status(number, status)
 
     if res:
@@ -51,8 +51,8 @@ def change_status(number: int, status: Status) -> None:
 
 
 @app.command()
-def show() -> None:
-    problems = get_problems()
+def show(difficulty: Difficulty | None = None, status: Status | None = None) -> None:
+    problems = get_problems(difficulty, status)
 
     if not problems:
         typer.echo("No problems found.")
