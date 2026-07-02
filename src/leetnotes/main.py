@@ -1,8 +1,10 @@
+from typing import Literal
+
 import typer
 
-from .db import init_db, reset_db, add_problem, delete_problem, get_problems, get_status, update_status
+from .db import init_db, reset_db, add_problem, delete_problem, get_problems, get_status, update_status, get_stats
 from .models import Difficulty, Status
-from .output import ProblemsTable
+from .output import ProblemsTable, StatsTable
 
 
 app = typer.Typer()
@@ -26,8 +28,8 @@ def reset() -> None:
 
 
 @app.command()
-def add(number: int, title: str, difficulty: Difficulty) -> None:
-    problem_id = add_problem(number, title, difficulty)
+def add(number: int, title: str, difficulty: Difficulty, status: Status) -> None:
+    problem_id = add_problem(number, title, difficulty, status)
 
     typer.echo(f"Added problem {number}.{title}")
 
@@ -86,6 +88,22 @@ def delete(number: int, force: bool = False) -> None:
         typer.echo(f"Problem {number} was deleted.")
     else:
         typer.echo(f"Problem {number} was not deleted.")
+
+
+@app.command()
+def stats(stat_name: str) -> None:
+    stats_data = get_stats(stat_name)
+
+    for stat_name, values in stats_data.items():
+        table = StatsTable(
+            title=f"{stat_name.capitalize()} Stats",
+            category_name=stat_name.capitalize(),
+        )
+
+        for name, quantity in values.items():
+            table.add_stat(name, quantity)
+
+        table.show()
 
 
 if __name__ == "__main__":

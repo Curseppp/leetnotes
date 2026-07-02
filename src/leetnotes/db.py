@@ -1,9 +1,13 @@
 import sqlite3
 from pathlib import Path
+from typing import Literal
 
 from .models import Difficulty, PublicProblem, Status
 
 DB_PATH = Path.home() / ".leetnotes" / "leetnotes.db"
+
+
+StatsParam = Literal["difficulty", "status"]
 
 
 
@@ -47,15 +51,15 @@ def delete_problem(number: int) -> bool:
         return cursor.rowcount > 0
 
 
-def add_problem(number: int, title: str, difficulty: Difficulty) -> int:
+def add_problem(number: int, title: str, difficulty: Difficulty, status: Status) -> int:
     with get_connection() as conn:
         slug = f"{number}-{title}"
         cursor = conn.execute(
             """
-            INSERT INTO problems (number, title, slug, difficulty)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO problems (number, title, slug, difficulty, status)
+            VALUES (?, ?, ?, ?, ?)
             """,
-            (number, title, slug, difficulty.value)
+            (number, title, slug, difficulty.value, status.value),
         )
 
         return cursor.lastrowid
@@ -74,6 +78,7 @@ def get_status(number: int) -> Status | None:
             return None
 
         return Status(row["status"])
+
 
 def update_status(number: int, status: Status):
     with get_connection() as conn:
@@ -124,3 +129,26 @@ def get_problems(
             )
             for row in rows
         ]
+
+
+def get_stats(param: StatsParam) -> dict[str, dict[str, int]]:
+    allowed_params = {"difficulty", "status"}
+
+    if param not in allowed_params:
+        raise ValueError(f"Invalid stats param: {param}")
+
+    with get_connection() as conn:
+        cursor = conn.execute(
+            f"""
+            SELECT {param}, COUNT(*) AS count
+            FROM problems
+            GROUP BY {param}
+            """
+        )
+
+        return {
+            param: {
+                row[param]: row["count"]
+                for row in cursor.fetchall()
+            }
+        }

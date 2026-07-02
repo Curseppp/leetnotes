@@ -8,6 +8,7 @@ wheels/
 
 .idea/
 *.db
+identifier.sqlite
 
 # Virtual environments
 .venv

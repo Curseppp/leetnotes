@@ -44,3 +44,17 @@ class ProblemsTable:
                 return f"[green]{Status.SOLVED.value.upper()}[/green]"
             case Status.REVIEW:
                 return f"[blue]{Status.REVIEW.value.upper()}[/blue]"
+
+
+class StatsTable:
+    def __init__(self, title: str, category_name: str) -> None:
+        self.table = Table(title=title)
+
+        self.table.add_column(category_name)
+        self.table.add_column("Quantity", justify="right")
+
+    def add_stat(self, name: str, quantity: int) -> None:
+        self.table.add_row(name, str(quantity))
+
+    def show(self) -> None:
+        console.print(self.table)
