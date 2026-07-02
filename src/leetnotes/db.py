@@ -2,7 +2,7 @@ import sqlite3
 from pathlib import Path
 from typing import List
 
-from .models import Difficulty, PublicProblem, Status
+from .models import Difficulty, PublicProblem, Status, Problem
 
 DB_PATH = Path("leetnotes.db")
 
@@ -58,6 +58,32 @@ def add_problem(number: int, title: str, difficulty: Difficulty) -> int:
         )
 
         return cursor.lastrowid
+
+
+def get_status(number: int) -> Status | None:
+    with get_connection() as conn:
+        cursor = conn.execute(
+            " SELECT status FROM problems WHERE number = ?",
+            (number, ),
+        )
+
+        row = cursor.fetchone()
+
+        if row is None:
+            return None
+
+        return Status(row["status"])
+
+def update_status(number: int, status: Status):
+    with get_connection() as conn:
+        cursor = conn.execute(
+            "UPDATE problems SET status = ? WHERE number = ?",
+            (status.value, number,),
+        )
+
+        return cursor.rowcount
+
+
 
 def get_problems() -> List[PublicProblem]:
     with get_connection() as conn:

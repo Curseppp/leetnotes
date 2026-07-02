@@ -1,7 +1,7 @@
 import typer
 
-from .db import init_db, reset_db, add_problem, delete_problem, get_problems
-from .models import Difficulty
+from .db import init_db, reset_db, add_problem, delete_problem, get_problems, get_status, update_status
+from .models import Difficulty, Status
 from .output import ProblemsTable
 
 
@@ -30,6 +30,24 @@ def add(number: int, title: str, difficulty: Difficulty) -> None:
     problem_id = add_problem(number, title, difficulty)
 
     typer.echo(f"Added problem {number}.{title}")
+
+
+@app.command()
+def status(number: int) -> None:
+    problem_status = get_status(number)
+
+    typer.echo(f"Problem #{number}: {problem_status.value}")
+
+
+@app.command()
+def change_status(number: int, status: Status) -> None:
+    res = update_status(number, status)
+
+    if res:
+        typer.echo(f"Changed status for problem #{number}.")
+    else:
+        typer.echo(f"Problem not found.")
+
 
 
 @app.command()
