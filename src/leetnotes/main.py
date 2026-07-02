@@ -4,6 +4,7 @@ import webbrowser
 from .db import init_db, reset_db, add_problem, delete_problem, get_problems, get_status, update_status, get_stats, get_url
 from .models import Difficulty, Status
 from .output import ProblemsTable, StatsTable
+from .service import create_url
 
 
 app = typer.Typer()
@@ -28,7 +29,8 @@ def reset() -> None:
 
 @app.command()
 def add(number: int, title: str, difficulty: Difficulty, status: Status | None = Status.TODO) -> None:
-    problem_id = add_problem(number, title, difficulty, status)
+    url = create_url(title)
+    problem_id = add_problem(number, title, difficulty, url, status)
 
     typer.echo(f"Added problem {number}.{title}")
 
@@ -112,8 +114,6 @@ def open(number: int) -> None:
         webbrowser.open(url)
     else:
         typer.echo(f"There is no such problem #{number}")
-
-
 
 
 if __name__ == "__main__":

@@ -3,17 +3,13 @@ from pathlib import Path
 from typing import Literal
 
 from .models import Difficulty, PublicProblem, Status
+from .service import create_url
 
 
 DB_PATH = Path.home() / ".leetnotes" / "leetnotes.db"
 
 StatsParam = Literal["difficulty", "status"]
 
-
-def create_url(title: str) -> str:
-    slug = "-".join(title.lower().split())
-    url = f"https://leetcode.com/problems/{slug}/"
-    return url
 
 
 def get_connection() -> sqlite3.Connection:
@@ -56,9 +52,14 @@ def delete_problem(number: int) -> bool:
         return cursor.rowcount > 0
 
 
-def add_problem(number: int, title: str, difficulty: Difficulty, status: Status | None = Status.TODO) -> int:
+def add_problem(
+        number: int,
+        title: str,
+        difficulty: Difficulty,
+        url: str,
+        status: Status | None = Status.TODO,
+) -> int:
     with get_connection() as conn:
-        url = create_url(title)
         cursor = conn.execute(
             """
             INSERT INTO problems (number, title, url, difficulty, status)
