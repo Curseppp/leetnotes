@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Literal
 
 from .models import Difficulty, PublicProblem, Status
-from .service import create_url
+from .service import create_slug
 
 
 DB_PATH = Path.home() / ".leetnotes" / "leetnotes.db"
@@ -28,7 +28,7 @@ def init_db():
            id INTEGER PRIMARY KEY AUTOINCREMENT,
             number INTEGER NOT NULL UNIQUE,
             title TEXT NOT NULL,
-            url TEXT NOT NULL,
+            slug TEXT NOT NULL,
             difficulty TEXT NOT NULL CHECK(difficulty IN ('easy', 'medium', 'hard')),
             status TEXT NOT NULL CHECK(status IN ('todo', 'solving', 'solved', 'review')) DEFAULT 'todo'    
         )
@@ -56,16 +56,16 @@ def add_problem(
         number: int,
         title: str,
         difficulty: Difficulty,
-        url: str,
+        slug: str,
         status: Status | None = Status.TODO,
 ) -> int:
     with get_connection() as conn:
         cursor = conn.execute(
             """
-            INSERT INTO problems (number, title, url, difficulty, status)
+            INSERT INTO problems (number, title, slug, difficulty, status)
             VALUES (?, ?, ?, ?, ?)
             """,
-            (number, title, url, difficulty.value, status.value),
+            (number, title, slug, difficulty.value, status.value),
         )
 
         return cursor.lastrowid
@@ -102,7 +102,7 @@ def get_problems(
     status: Status | None = None,
 ) -> list[PublicProblem]:
     query = """
-        SELECT number, title, difficulty, status, url
+        SELECT number, title, difficulty, status
         FROM problems
     """
 
@@ -132,15 +132,14 @@ def get_problems(
                 title=row["title"],
                 difficulty=Difficulty(row["difficulty"]),
                 status=Status(row["status"]),
-                url=row["url"]
             )
             for row in rows
         ]
 
-def get_url(number: int) -> str | None:
+def get_slug(number: int) -> str | None:
     with get_connection() as conn:
         cursor = conn.execute(
-            " SELECT url FROM problems WHERE number = ?",
+            " SELECT slug FROM problems WHERE number = ?",
             (number, ),
         )
 
@@ -149,7 +148,7 @@ def get_url(number: int) -> str | None:
         if row is None:
             return None
 
-        return str(row["url"])
+        return str(row["slug"])
 
 def get_stats(param: StatsParam) -> dict[str, dict[str, int]]:
     allowed_params = {"difficulty", "status"}

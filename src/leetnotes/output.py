@@ -12,15 +12,13 @@ class ProblemsTable:
         self.table.add_column("Title", style="bold")
         self.table.add_column("Difficulty")
         self.table.add_column("Status")
-        self.table.add_column("Url")
 
     def add_problem(self, problem: PublicProblem) -> None:
         self.table.add_row(
             str(problem.number),
             problem.title,
             self._format_difficulty(problem.difficulty),
-            self._format_status(problem.status),
-            problem.url,
+            self._format_status(problem.status)
         )
 
     def show(self) -> None:

@@ -1,11 +1,10 @@
 import typer
 import webbrowser
 
-from .db import init_db, reset_db, add_problem, delete_problem, get_problems, get_status, update_status, get_stats, get_url
+from .db import init_db, reset_db, add_problem, delete_problem, get_problems, get_status, update_status, get_stats, get_slug
 from .models import Difficulty, Status
 from .output import ProblemsTable, StatsTable
-from .service import create_url
-
+from .service import create_slug, return_url
 
 app = typer.Typer()
 
@@ -29,8 +28,8 @@ def reset() -> None:
 
 @app.command()
 def add(number: int, title: str, difficulty: Difficulty, status: Status | None = Status.TODO) -> None:
-    url = create_url(title)
-    problem_id = add_problem(number, title, difficulty, url, status)
+    slug = create_slug(title)
+    problem_id = add_problem(number, title, difficulty, slug, status)
 
     typer.echo(f"Added problem {number}.{title}")
 
@@ -107,7 +106,8 @@ def stats(stat_name: str) -> None:
 
 @app.command()
 def open(number: int) -> None:
-    url = get_url(number)
+    slug = get_slug(number)
+    url = return_url(slug)
 
     if url:
         typer.echo(f"Opened {url}")

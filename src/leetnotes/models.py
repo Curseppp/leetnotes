@@ -19,7 +19,7 @@ class Status(str, Enum):
 class Problem:
     number: int
     title: str
-    url: str
+    slug: str
     difficulty: Difficulty
     status: Status
 
@@ -30,5 +30,4 @@ class PublicProblem:
     title: str
     difficulty: Difficulty
     status: Status
-    url: str
 
