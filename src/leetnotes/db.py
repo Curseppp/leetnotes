@@ -2,7 +2,7 @@ import sqlite3
 from pathlib import Path
 from typing import Literal
 
-from .models import Difficulty, PublicProblem, Status
+from .models import Difficulty, PublicProblem, Status, Problem
 
 
 DB_PATH = Path.home() / ".leetnotes" / "leetnotes.db"
@@ -152,7 +152,7 @@ def get_slug(number: int) -> str | None:
         return str(row["slug"])
 
 
-def get_problem(number: int) -> PublicProblem | None:
+def get_problem(number: int) -> Problem | None:
     with get_connection() as conn:
         cursor = conn.execute(
             " SELECT * FROM problems WHERE number = ?",
@@ -164,11 +164,12 @@ def get_problem(number: int) -> PublicProblem | None:
         if row is None:
             return None
 
-        return PublicProblem(
+        return Problem(
             number=row["number"],
             title=row["title"],
             difficulty=Difficulty(row["difficulty"]),
             status=Status(row["status"]),
+            slug=row["slug"],
         )
 
 
