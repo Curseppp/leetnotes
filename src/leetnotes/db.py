@@ -3,13 +3,11 @@ from pathlib import Path
 from typing import Literal
 
 from .models import Difficulty, PublicProblem, Status
-from .service import create_slug
 
 
 DB_PATH = Path.home() / ".leetnotes" / "leetnotes.db"
 
 StatsParam = Literal["difficulty", "status"]
-
 
 
 def get_connection() -> sqlite3.Connection:
@@ -149,6 +147,25 @@ def get_slug(number: int) -> str | None:
             return None
 
         return str(row["slug"])
+
+def get_problem(number: int) -> PublicProblem | None:
+    with get_connection() as conn:
+        cursor = conn.execute(
+            " SELECT * FROM problems WHERE number = ?",
+            (number, ),
+        )
+
+        row = cursor.fetchone()
+
+        if row is None:
+            return None
+
+        return PublicProblem(
+                number=row["number"],
+                title=row["title"],
+                difficulty=Difficulty(row["difficulty"]),
+                status=Status(row["status"]),
+            )
 
 def get_stats(param: StatsParam) -> dict[str, dict[str, int]]:
     allowed_params = {"difficulty", "status"}
