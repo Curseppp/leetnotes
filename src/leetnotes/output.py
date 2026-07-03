@@ -18,7 +18,7 @@ class ProblemsTable:
             str(problem.number),
             problem.title,
             self._format_difficulty(problem.difficulty),
-            self._format_status(problem.status)
+            self._format_status(problem.status),
         )
 
     def show(self) -> None:
@@ -32,7 +32,6 @@ class ProblemsTable:
                 return f"[yellow]{Difficulty.MEDIUM.value}[/yellow]"
             case Difficulty.HARD:
                 return f"[red]{Difficulty.HARD.value}[/red]"
-
 
     def _format_status(self, status: Status) -> str:
         match status:

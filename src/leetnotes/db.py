@@ -18,7 +18,7 @@ def get_connection() -> sqlite3.Connection:
     return conn
 
 
-def init_db():
+def init_db() -> None:
     with get_connection() as conn:
         conn.execute("""
         CREATE TABLE IF NOT EXISTS problems
@@ -51,11 +51,11 @@ def delete_problem(number: int) -> bool:
 
 
 def add_problem(
-        number: int,
-        title: str,
-        difficulty: Difficulty,
-        slug: str,
-        status: Status | None = Status.TODO,
+    number: int,
+    title: str,
+    difficulty: Difficulty,
+    slug: str,
+    status: Status | None = Status.TODO,
 ) -> int:
     with get_connection() as conn:
         cursor = conn.execute(
@@ -73,7 +73,7 @@ def get_status(number: int) -> Status | None:
     with get_connection() as conn:
         cursor = conn.execute(
             " SELECT status FROM problems WHERE number = ?",
-            (number, ),
+            (number,),
         )
 
         row = cursor.fetchone()
@@ -84,15 +84,17 @@ def get_status(number: int) -> Status | None:
         return Status(row["status"])
 
 
-def update_status(number: int, status: Status):
+def update_status(number: int, status: Status) -> int:
     with get_connection() as conn:
         cursor = conn.execute(
             "UPDATE problems SET status = ? WHERE number = ?",
-            (status.value, number,),
+            (
+                status.value,
+                number,
+            ),
         )
 
         return cursor.rowcount
-
 
 
 def get_problems(
@@ -134,11 +136,12 @@ def get_problems(
             for row in rows
         ]
 
+
 def get_slug(number: int) -> str | None:
     with get_connection() as conn:
         cursor = conn.execute(
             " SELECT slug FROM problems WHERE number = ?",
-            (number, ),
+            (number,),
         )
 
         row = cursor.fetchone()
@@ -148,11 +151,12 @@ def get_slug(number: int) -> str | None:
 
         return str(row["slug"])
 
+
 def get_problem(number: int) -> PublicProblem | None:
     with get_connection() as conn:
         cursor = conn.execute(
             " SELECT * FROM problems WHERE number = ?",
-            (number, ),
+            (number,),
         )
 
         row = cursor.fetchone()
@@ -161,11 +165,12 @@ def get_problem(number: int) -> PublicProblem | None:
             return None
 
         return PublicProblem(
-                number=row["number"],
-                title=row["title"],
-                difficulty=Difficulty(row["difficulty"]),
-                status=Status(row["status"]),
-            )
+            number=row["number"],
+            title=row["title"],
+            difficulty=Difficulty(row["difficulty"]),
+            status=Status(row["status"]),
+        )
+
 
 def get_stats(param: StatsParam) -> dict[str, dict[str, int]]:
     allowed_params = {"difficulty", "status"}
@@ -182,9 +187,4 @@ def get_stats(param: StatsParam) -> dict[str, dict[str, int]]:
             """
         )
 
-        return {
-            param: {
-                row[param]: row["count"]
-                for row in cursor.fetchall()
-            }
-        }
+        return {param: {row[param]: row["count"] for row in cursor.fetchall()}}

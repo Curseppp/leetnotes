@@ -1,7 +1,17 @@
 import typer
 import webbrowser
 
-from .db import init_db, reset_db, add_problem, delete_problem, get_problems, get_status, update_status, get_stats, get_slug
+from .db import (
+    init_db,
+    reset_db,
+    add_problem,
+    delete_problem,
+    get_problems,
+    get_status,
+    update_status,
+    get_stats,
+    get_slug,
+)
 from .models import Difficulty, Status
 from .output import ProblemsTable, StatsTable
 from .service import create_slug, return_url
@@ -27,9 +37,11 @@ def reset() -> None:
 
 
 @app.command()
-def add(number: int, title: str, difficulty: Difficulty, status: Status | None = Status.TODO) -> None:
+def add(
+    number: int, title: str, difficulty: Difficulty, status: Status | None = Status.TODO
+) -> None:
     slug = create_slug(title)
-    problem_id = add_problem(number, title, difficulty, slug, status)
+    add_problem(number, title, difficulty, slug, status)
 
     typer.echo(f"Added problem {number}.{title}")
 
@@ -52,8 +64,7 @@ def edit_status(number: int, status: Status) -> None:
     if res:
         typer.echo(f"Changed status for problem #{number}.")
     else:
-        typer.echo(f"Problem not found.")
-
+        typer.echo("Problem not found.")
 
 
 @app.command()

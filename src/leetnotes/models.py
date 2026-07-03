@@ -30,4 +30,3 @@ class PublicProblem:
     title: str
     difficulty: Difficulty
     status: Status
-

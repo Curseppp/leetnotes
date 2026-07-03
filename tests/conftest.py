@@ -32,6 +32,12 @@ def sample_problems(test_db) -> List[Problem]:
     ]
 
     for problem in problems:
-        add_problem(problem.number, problem.title, problem.difficulty, problem.slug, problem.status)
+        add_problem(
+            problem.number,
+            problem.title,
+            problem.difficulty,
+            problem.slug,
+            problem.status,
+        )
 
     return problems
