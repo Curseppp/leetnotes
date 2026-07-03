@@ -4,7 +4,7 @@ CLI tool for tracking LeetCode problems.
 ## Installation
 To install dependencies, use uv - An extremely fast Python package and project manager, written in Rust (by Astral).
 ```
-uv sunc
+uv sync
 ```
 ## Usage
 
