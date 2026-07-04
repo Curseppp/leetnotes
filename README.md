@@ -1,4 +1,6 @@
 # Leetnotes
+[![CI](https://github.com/Curseppp/leetnotes/actions/workflows/ci.yml/badge.svg)](https://github.com/Curseppp/leetnotes/actions/workflows/ci.yml)
+
 CLI tool for tracking LeetCode problems.
 
 ## Installation
