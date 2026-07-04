@@ -6,7 +6,7 @@ from leetnotes.db import (
     get_status,
     update_status,
     get_slug,
-    get_stats
+    get_stats,
 )
 from leetnotes.models import Difficulty, Status
 
@@ -77,5 +77,6 @@ def test_get_stats(sample_problems) -> None:
     stats_by_status = get_stats("status")
 
     assert {"difficulty": {"easy": 4, "medium": 1, "hard": 2}} == stats_by_diff
-    assert {"status": {"todo": 1, "solving": 1, "solved": 4, "review": 1}} == stats_by_status
-
+    assert {
+        "status": {"todo": 1, "solving": 1, "solved": 4, "review": 1}
+    } == stats_by_status
