@@ -55,7 +55,7 @@ def add_problem(
     title: str,
     difficulty: Difficulty,
     slug: str,
-    status: Status | None = Status.TODO,
+    status: Status = Status.TODO,
 ) -> int:
     with get_connection() as conn:
         cursor = conn.execute(

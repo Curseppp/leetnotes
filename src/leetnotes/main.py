@@ -38,7 +38,7 @@ def reset() -> None:
 
 @app.command()
 def add(
-    number: int, title: str, difficulty: Difficulty, status: Status | None = Status.TODO
+    number: int, title: str, difficulty: Difficulty, status: Status = Status.TODO
 ) -> None:
     slug = create_slug(title)
     add_problem(number, title, difficulty, slug, status)
