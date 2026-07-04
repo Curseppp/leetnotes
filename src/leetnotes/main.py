@@ -12,7 +12,7 @@ from .db import (
     get_stats,
     get_slug,
 )
-from .models import Difficulty, Status
+from .models import Difficulty, Status, StatsParam
 from .output import ProblemsTable, StatsTable
 from .service import create_slug, return_url
 
@@ -100,7 +100,7 @@ def delete(number: int, force: bool = False) -> None:
 
 
 @app.command()
-def stats(stat_name: str) -> None:
+def stats(stat_name: StatsParam) -> None:
     stats_data = get_stats(stat_name)
 
     for stat_name, values in stats_data.items():

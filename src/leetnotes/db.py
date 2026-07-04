@@ -2,12 +2,16 @@ import sqlite3
 from pathlib import Path
 from typing import Literal
 
-from .models import Difficulty, PublicProblem, Status, Problem
+from .models import (
+    Difficulty,
+    PublicProblem,
+    Status,
+    Problem,
+    StatsParam,
+)
 
 
 DB_PATH = Path.home() / ".leetnotes" / "leetnotes.db"
-
-StatsParam = Literal["difficulty", "status"]
 
 
 def get_connection() -> sqlite3.Connection:
@@ -174,18 +178,13 @@ def get_problem(number: int) -> Problem | None:
 
 
 def get_stats(param: StatsParam) -> dict[str, dict[str, int]]:
-    allowed_params = {"difficulty", "status"}
-
-    if param not in allowed_params:
-        raise ValueError(f"Invalid stats param: {param}")
-
     with get_connection() as conn:
         cursor = conn.execute(
             f"""
-            SELECT {param}, COUNT(*) AS count
+            SELECT {param.value}, COUNT(*) AS count
             FROM problems
-            GROUP BY {param}
+            GROUP BY {param.value}
             """
         )
 
-        return {param: {row[param]: row["count"] for row in cursor.fetchall()}}
+        return {param.value: {row[param.value]: row["count"] for row in cursor.fetchall()}}

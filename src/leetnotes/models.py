@@ -15,6 +15,11 @@ class Status(str, Enum):
     REVIEW = "review"
 
 
+class StatsParam(str, Enum):
+    DIFFICULTY = "difficulty"
+    STATUS = "status"
+
+
 @dataclass
 class Problem:
     number: int

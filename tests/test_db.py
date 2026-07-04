@@ -8,7 +8,7 @@ from leetnotes.db import (
     get_slug,
     get_stats,
 )
-from leetnotes.models import Difficulty, Status
+from leetnotes.models import Difficulty, Status, StatsParam
 
 
 def test_add_problem(test_db) -> None:
@@ -73,8 +73,8 @@ def test_get_slug(sample_problems) -> None:
 
 
 def test_get_stats(sample_problems) -> None:
-    stats_by_diff = get_stats("difficulty")
-    stats_by_status = get_stats("status")
+    stats_by_diff = get_stats(StatsParam.DIFFICULTY)
+    stats_by_status = get_stats(StatsParam.STATUS)
 
     assert {"difficulty": {"easy": 4, "medium": 1, "hard": 2}} == stats_by_diff
     assert {
