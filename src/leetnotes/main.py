@@ -118,13 +118,14 @@ def stats(stat_name: str) -> None:
 @app.command()
 def open(number: int) -> None:
     slug = get_slug(number)
-    url = return_url(slug)
 
-    if url:
-        typer.echo(f"Opened {url}")
-        webbrowser.open(url)
-    else:
-        typer.echo(f"There is no such problem #{number}")
+    if slug is None:
+        typer.echo(f"Problem #{number} not found.")
+        return
+
+    url = return_url(slug)
+    typer.echo(f"Opened {url}")
+    webbrowser.open(url)
 
 
 if __name__ == "__main__":
