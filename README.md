@@ -1,5 +1,8 @@
 # Leetnotes
 [![CI](https://github.com/Curseppp/leetnotes/actions/workflows/ci.yml/badge.svg)](https://github.com/Curseppp/leetnotes/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.13%2B-blue)
+![Code style](https://img.shields.io/badge/code%20style-ruff-blue)
+![uv](https://img.shields.io/badge/package%20manager-uv-blue)
 
 CLI tool for tracking LeetCode problems.
 
