@@ -1,6 +1,5 @@
 import sqlite3
 from pathlib import Path
-from typing import Literal
 
 from .models import (
     Difficulty,

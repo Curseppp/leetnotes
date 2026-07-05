@@ -38,9 +38,14 @@ def reset() -> None:
 
 @app.command()
 def add(
-    number: int, title: str, difficulty: Difficulty, status: Status = Status.TODO
+    number: int,
+    title: str,
+    difficulty: Difficulty,
+    status: Status = Status.TODO,
+    slug: str | None = None,
 ) -> None:
-    slug = create_slug(title)
+    if slug is None:
+        slug = create_slug(title)
     add_problem(number, title, difficulty, slug, status)
 
     typer.echo(f"Added problem {number}.{title}")
