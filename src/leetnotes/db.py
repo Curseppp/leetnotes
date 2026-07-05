@@ -186,4 +186,6 @@ def get_stats(param: StatsParam) -> dict[str, dict[str, int]]:
             """
         )
 
-        return {param.value: {row[param.value]: row["count"] for row in cursor.fetchall()}}
+        return {
+            param.value: {row[param.value]: row["count"] for row in cursor.fetchall()}
+        }
